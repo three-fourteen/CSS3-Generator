@@ -9,6 +9,8 @@ var styleSample = $('#style-sample');
 var styleBoard = $('#style-board');
 var filters = $('.filter input');
 
+//reset on load
+corners.attr('value','');
 
 
 function updateBoard(values){
@@ -17,30 +19,12 @@ function updateBoard(values){
     if(values[0] == values[1] && values[0] == values[2] && values[0] == values[3] && values[0] == values[4] && values[0] == values[5] && values[0] == values[6] && values[0] == values[7]){
         setupValues = values[0] + measure;
     }else{
-        /*setupValues = [];
-        setupValues[0] = values[0] + measure;
-        setupValues[1] = values[1] + measure;
-        setupValues[2] = values[2] + measure;
-        setupValues[3] = values[3] + measure + '/';
-        if(values[0] != values[4]){
-            setupValues[4] = values[4] + measure;
-        }
-        if(values[1] != values[5]){
-            setupValues[5] = values[5] + measure;
-        }
-        if(values[2] != values[6]){
-            setupValues[6] = values[6] + measure;
-        }
-        if(values[3] != values[7]){
-            setupValues[7] = values[7] + measure;
-        }*/
-        //setupValues = values[0] + measure + values[0] + measure + values[0] + measure + values[0] + measure + values[0] + measure + values[0] + measure + values[0] + measure + values[0] + measure + values[0] + measure; 
         values[4] = '/ ' + values[4];
         setupValues = values.join(measure + ' ') + measure;
     }
     var browsers = $("input[name='browsers']:checked");
     var styleBoardText = 'border-radius:' + setupValues  + ';\n';
-    if(values != '0'){
+    if(values){
         for(i=0;i<browsers.length;i++){
             styleBoardText += '-' + $("input[name='browsers']:checked")[i].value + '-border-radius:' + setupValues + ';\n';
         }
@@ -53,7 +37,12 @@ function updateBoard(values){
 function getValues(){
     var values = [];
     corners.each(function(i) {
-        values[i] = $(this).attr('value');
+        var itemValue = $(this).attr('value');
+        if(itemValue){
+            values[i] = itemValue;
+        }else{
+            values[i] = $(this).attr('placeholder');
+        }
     })
     return values;
 }
@@ -63,20 +52,6 @@ filters.bind('change', function(){
 })
 
 corners.each(function() {
-    var value;
-    
-    /*
-    $(this).focus(function (){
-        if($(this).attr('value') == value){
-            $(this).attr('value','').addClass('writingIt');
-        }
-    }).blur(function () {
-        if($(this).attr('value') == ''){
-            $(this).attr('value',value).removeClass('writingIt');
-        }
-    });*/
-    
-    
     //Allow only numbers
     $(this).bind('keypress', function(e){
         var code = e.charCode ? e.charCode : e.keyCode;
@@ -84,9 +59,7 @@ corners.each(function() {
         return true; 
     })
         
-    $(this).bind('keyup', function(){
-        //value = $(this).attr('value');
-        
+    $(this).bind('keyup', function(){        
         updateBoard(getValues());
     })
       
